@@ -1,4 +1,4 @@
-# Tira Time — sorteio de times equilibrados para a pelada (HTML + CSS + JS)
+# Tira Time: sorteio de times equilibrados para a pelada (HTML + CSS + JS)
 
 Todo racha tem o mesmo drama: tirar os times sem deixar todos os bons do mesmo lado. O Tira Time sorteia times equilibrados a partir de um nível de 1 a 5 para cada jogador, separa os goleiros e gera a lista pronta para colar no grupo do WhatsApp. O elenco fica salvo no navegador, então na semana seguinte é só marcar quem vai jogar.
 
@@ -64,4 +64,4 @@ Issues e pull requests são bem-vindos.
 
 ## Licença
 
-MIT — veja [LICENSE](LICENSE).
+MIT. Veja [LICENSE](LICENSE).

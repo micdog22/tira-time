@@ -30,7 +30,7 @@ test('linha colada: nome, nível, goleiro, numeração e emojis', () => {
   const cases = [
     ['Ana', { name: 'Ana', level: null, keeper: false }],
     ['Bruno - 4', { name: 'Bruno', level: 4, keeper: false }],
-    ['Kiko – 2', { name: 'Kiko', level: 2, keeper: false }],
+    ['Kiko \u2013 2', { name: 'Kiko', level: 2, keeper: false }],
     ['Carlos (G)', { name: 'Carlos', level: null, keeper: true }],
     ['Diego goleiro - 5', { name: 'Diego', level: 5, keeper: true }],
     ['Goleiro: Edu', { name: 'Edu', level: null, keeper: true }],

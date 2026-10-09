@@ -69,10 +69,10 @@ export const levelOf = (player) => player.level ?? DEFAULT_LEVEL;
 
 /* ---------- lista colada ---------- */
 
-const KEEPER_MARK = /[([]\s*(?:g|gk|gol|goleir[oa])\s*[)\]]|(?:^|\s)goleir[oa](?=\s|$|[-–—:,])|🧤/giu;
-const ENUMERATION = /^\s*(?:\d{1,3}\s*[.)\-–—º°]|[-–—•*·])\s*/u;
+const KEEPER_MARK = /[([]\s*(?:g|gk|gol|goleir[oa])\s*[)\]]|(?:^|\s)goleir[oa](?=\s|$|[-\u2013\u2014:,])|🧤/giu;
+const ENUMERATION = /^\s*(?:\d{1,3}\s*[.)\-\u2013\u2014º°]|[-\u2013\u2014•*·])\s*/u;
 const LEVEL_SUFFIXES = [
-  /\s*[-–—:=]\s*(\d+)\s*(?:★|⭐|estrelas?)?\s*$/iu,
+  /\s*[-\u2013\u2014:=]\s*(\d+)\s*(?:★|⭐|estrelas?)?\s*$/iu,
   /\s*\(\s*(\d+)\s*(?:★|⭐)?\s*\)\s*$/u,
   /\s+(\d+)\s*(?:★|⭐)\s*$/u,
 ];
@@ -108,7 +108,7 @@ export function parsePlayerLine(line) {
       text = text.slice(0, m.index);
     }
   }
-  const name = cleanName(text.replace(/^[\s\-–—:=,]+|[\s\-–—:=,]+$/gu, ''));
+  const name = cleanName(text.replace(/^[\s\-\u2013\u2014:=,]+|[\s\-\u2013\u2014:=,]+$/gu, ''));
   if (!name) return { name: '', level, keeper, warning: 'linha sem nome' };
   if (name.length > MAX_NAME_LENGTH) return { name: name.slice(0, MAX_NAME_LENGTH), level, keeper, warning: `nome cortado em ${MAX_NAME_LENGTH} caracteres` };
   return warning ? { name, level, keeper, warning } : { name, level, keeper };
@@ -260,7 +260,7 @@ function improve(teams, randomInt, maxRounds = 2000) {
 
 /**
  * Sorteia os times.
- * players: [{ id, name, level (1–5 ou null), keeper }]. Devolve { teams, reserves, plan },
+ * players: [{ id, name, level (1 a 5 ou null), keeper }]. Devolve { teams, reserves, plan },
  * com goleiros escalados marcados como asKeeper.
  */
 export function drawTeams(players, options = {}, randomInt = cryptoRandomInt) {
