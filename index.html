@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tira Time — sorteio de times equilibrados para a pelada</title>
+  <meta name="description" content="Sorteie times equilibrados para a pelada: nível de 1 a 5 para cada jogador, goleiros separados, reservas e lista pronta para mandar no grupo do WhatsApp.">
+  <meta name="theme-color" content="#15803d">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚽</text></svg>">
+  <link rel="stylesheet" href="./styles.css">
+  <script type="module" src="./src/app.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <h1>Tira Time</h1>
+    <p class="lead">Sorteio de times equilibrados para a pelada: dê um nível para cada jogador, separe os goleiros e mande os times no grupo.</p>
+  </header>
+
+  <main>
+    <section class="card" aria-labelledby="jogadores-titulo">
+      <h2 id="jogadores-titulo">Jogadores</h2>
+      <form id="form-jogador" class="add-player" novalidate>
+        <div class="field add-name">
+          <label for="jogador-nome">Nome</label>
+          <input id="jogador-nome" maxlength="40" autocomplete="off" placeholder="Ex.: Pedro Exemplo" aria-describedby="jogador-erro">
+        </div>
+        <div class="field add-level">
+          <label for="jogador-nivel">Nível</label>
+          <select id="jogador-nivel">
+            <option value="">Sem nível</option>
+            <option value="1">1 ★</option>
+            <option value="2">2 ★</option>
+            <option value="3">3 ★</option>
+            <option value="4">4 ★</option>
+            <option value="5">5 ★</option>
+          </select>
+        </div>
+        <label class="check add-gk"><input type="checkbox" id="jogador-goleiro"> Goleiro</label>
+        <button class="btn add-btn" type="submit">Adicionar</button>
+      </form>
+      <p class="field-error" id="jogador-erro" role="alert" hidden></p>
+
+      <details class="bulk">
+        <summary>Colar a lista do grupo</summary>
+        <p class="hint">Um jogador por linha. Indique o nível com <code>Nome - 4</code> (ou ⭐⭐⭐⭐) e o goleiro com <code>(G)</code>, <code>goleiro</code> ou 🧤. Numeração como “1.” é ignorada. Quem já está no elenco é atualizado e marcado como presente.</p>
+        <label for="lista-colada">Lista</label>
+        <textarea id="lista-colada" rows="6" spellcheck="false" placeholder="1. Pedro Exemplo - 4&#10;2. João Exemplo (G)&#10;3. Ana Exemplo ⭐⭐⭐"></textarea>
+        <div class="actions">
+          <button type="button" class="btn secondary" id="lista-adicionar">Adicionar ao elenco</button>
+        </div>
+        <div class="hint" id="lista-status" role="status"></div>
+      </details>
+
+      <div class="roster-head">
+        <p class="hint" id="presentes">Nenhum jogador ainda.</p>
+        <div class="actions small">
+          <button type="button" class="btn secondary" id="marcar-todos">Marcar todos</button>
+          <button type="button" class="btn secondary" id="desmarcar-todos">Desmarcar todos</button>
+        </div>
+      </div>
+      <ul class="roster" id="elenco" aria-label="Elenco"></ul>
+    </section>
+
+    <section class="card" aria-labelledby="sorteio-titulo">
+      <h2 id="sorteio-titulo">Sorteio</h2>
+      <fieldset class="segmented">
+        <legend>Dividir por</legend>
+        <label class="check"><input type="radio" name="modo" id="modo-times" value="teams" checked> Número de times</label>
+        <label class="check"><input type="radio" name="modo" id="modo-tamanho" value="size"> Jogadores por time</label>
+      </fieldset>
+      <div class="field narrow" id="campo-times">
+        <label for="qtd-times">Número de times</label>
+        <input id="qtd-times" type="number" min="2" max="10" step="1" value="2" inputmode="numeric">
+      </div>
+      <div class="field narrow" id="campo-tamanho" hidden>
+        <label for="por-time">Jogadores por time <span class="muted">(com goleiro)</span></label>
+        <input id="por-time" type="number" min="1" max="50" step="1" value="5" inputmode="numeric">
+      </div>
+      <label class="check"><input type="checkbox" id="opt-equilibrar" checked> <span>Equilibrar pelo nível <span class="muted">(quem está sem nível conta como 3)</span></span></label>
+      <label class="check"><input type="checkbox" id="opt-goleiros" checked> Separar os goleiros (um por time, quando der)</label>
+      <label class="check"><input type="checkbox" id="opt-reservas"> Se a divisão não for exata, deixar reservas</label>
+      <p class="plan" id="plano" aria-live="polite"></p>
+      <p class="form-error" id="sorteio-erro" role="alert" hidden></p>
+      <div class="actions">
+        <button class="btn big" type="button" id="sortear">Sortear times</button>
+      </div>
+    </section>
+
+    <section class="card" id="resultado" hidden aria-labelledby="resultado-titulo">
+      <h2 id="resultado-titulo" tabindex="-1">Times</h2>
+      <p class="hint" id="resultado-resumo" aria-live="polite"></p>
+      <div class="teams" id="times"></div>
+      <div class="reserves" id="reservas" hidden>
+        <h3>Reservas</h3>
+        <ul class="team-players" id="reservas-lista"></ul>
+      </div>
+      <label class="check"><input type="checkbox" id="copiar-niveis"> Incluir os níveis no texto copiado</label>
+      <div class="actions">
+        <button class="btn" type="button" id="copiar">Copiar times</button>
+        <button class="btn secondary" type="button" id="sortear-de-novo">Sortear de novo</button>
+      </div>
+      <p class="status" id="copiar-status" role="status"></p>
+      <div class="field manual-copy" id="copiar-manual" hidden>
+        <label for="copiar-texto">Copie o texto manualmente</label>
+        <textarea id="copiar-texto" rows="8" readonly></textarea>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>Tudo roda no seu navegador e o elenco fica salvo só nele. Código aberto no <a href="https://github.com/micdog22/tira-time">GitHub</a> · Licença MIT</p>
+  </footer>
+</body>
+</html>

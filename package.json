@@ -1,0 +1,11 @@
+{
+  "name": "tira-time",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Sorteio de times equilibrados para a pelada: níveis de 1 a 5, goleiros separados, reservas e texto pronto para o WhatsApp.",
+  "type": "module",
+  "scripts": { "test": "node --test" },
+  "license": "MIT",
+  "repository": { "type": "git", "url": "git+https://github.com/micdog22/tira-time.git" },
+  "homepage": "https://micdog22.github.io/tira-time/"
+}
